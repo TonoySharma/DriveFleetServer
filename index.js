@@ -19,7 +19,7 @@ const client = new MongoClient(uri, {
 });
 
    const logger =  (req, res, next)=>{
-      console.log(req.params);
+      console.log(`${req.method} | $(req.url)`);
 
       next();
       
@@ -50,14 +50,7 @@ async function run() {
 
 
 
-    app.get("/cars/:carsId",
-      
-      (req, res, next)=>{
-      console.log(req.params);
-
-      next();
-      
-  }, async (req, res) => {
+    app.get("/cars/:carsId",logger, async (req, res) => {
     const {carsId} = req.params;
     console.log(carsId);
     const query = {_id: new ObjectId (carsId)}
@@ -65,7 +58,6 @@ async function run() {
 
     res.json(result);
 });
-
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
