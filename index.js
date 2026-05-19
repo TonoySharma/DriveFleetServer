@@ -76,8 +76,18 @@ async function run() {
 
     const db = client.db("DriveFleet")
     const carsCollection = db.collection('Cars')
+    const bookNowCollection = db.collection('booknow')
 
     app.get("/cars", async (req, res) => {
+      const {search} = req.query;
+
+      // let cursor;
+      // if(search){
+      //   cursor = carsCollection.find({title: search});
+
+      // }
+
+
         // const cars = await req.body
         // console.log(cars);
         const result = await carsCollection.find().toArray()
@@ -100,6 +110,36 @@ async function run() {
 
     res.json(result);
 });
+
+app.patch('/booknow/:carsId',verifyToken ,async(req, res) =>{
+  const {carsId} = req.params;
+  const bookNowdata = req.body;
+
+  const car = await carsCollection.findOne({_id: new ObjectId(carsId)})
+
+  if(!car){
+    res.status(404).json({massage: 'Car not found'});
+  }
+
+  await carsCollection.updateOne({_id: new ObjectId(carsId)},{
+     $inc: {bookNowCount: 1},
+     $set: {
+      lastBookNow: new Date(),
+     },
+  });
+
+  const result = await bookNowCollection.insertOne({
+    ...bookNowdata,
+    bookNow: new Date()
+  });
+
+  res.send(result);
+
+});
+
+
+
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
