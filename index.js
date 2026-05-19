@@ -1,9 +1,14 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const cors = require('cors')
+const cors = require('cors');
+const { createRemoteJWKSet } = require('jose-cjs');
 dotenv.config()
 const uri = process.env.MONGODB_URI;
+
+const JWKS =  createRemoteJWKSet(
+      new URL('http://localhost:3000/api/auth/jwks')
+    )
 
 const app = express()
 app.use(cors())
@@ -30,10 +35,9 @@ const verifyToken = async (req, res, next) =>{
 
   // console.log(req, headers, 'verify Token');
 
-  const token = authorization?.split(" ");
+  const token = authorization?.split(" ") [1];
 
   console.log(token);
-  
 
      next();
 };
