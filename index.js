@@ -23,7 +23,22 @@ const client = new MongoClient(uri, {
 
       next();
       
-  }
+  };
+
+const verifyToken = async (req, res, next) =>{
+  const { authorization} = req.headers;
+
+  // console.log(req, headers, 'verify Token');
+
+  const token = authorization?.split(" ");
+
+  console.log(token);
+  
+
+     next();
+};
+
+
 
 async function run() {
   try {
@@ -50,7 +65,7 @@ async function run() {
 
 
 
-    app.get("/cars/:carsId",logger, async (req, res) => {
+    app.get("/cars/:carsId",logger, verifyToken, async (req, res) => {
     const {carsId} = req.params;
     console.log(carsId);
     const query = {_id: new ObjectId (carsId)}
