@@ -17,10 +17,20 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
+   const logger   (req, res, next)=>{
+      console.log(req.params);
+
+      next();
+      
+  },
+
+
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    await client.connect("DriveFleet");
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
 
@@ -42,7 +52,14 @@ async function run() {
 
 
 
-    app.get("/cars/:carsId", async (req, res) => {
+    app.get("/cars/:carsId",
+      
+      (req, res, next)=>{
+      console.log(req.params);
+
+      next();
+      
+  }, async (req, res) => {
     const {carsId} = req.params;
     console.log(carsId);
     const query = {_id: new ObjectId (carsId)}
@@ -50,10 +67,6 @@ async function run() {
 
     res.json(result);
 });
-
-
-
-
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
