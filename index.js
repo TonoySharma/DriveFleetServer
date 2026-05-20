@@ -109,6 +109,16 @@ async function run() {
     res.json(result);
 });
 
+ app.get("/booknow/:carsId", async (req, res)=>{
+    const {} = req.params;
+    const result = await  carsCollection.find({carsId: carsId}).toArray();
+
+     res.sent(result);
+ })
+
+
+
+
 app.patch('/booknow/:carsId',verifyToken ,async(req, res) =>{
   const {carsId} = req.params;
   const bookNowData = req.body;
