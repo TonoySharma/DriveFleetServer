@@ -87,8 +87,6 @@ async function run() {
 
       // }
 
-
-        // const cars = await req.body
         // console.log(cars);
         const result = await carsCollection.find().toArray()
         res.json(result)
@@ -113,7 +111,7 @@ async function run() {
 
 app.patch('/booknow/:carsId',verifyToken ,async(req, res) =>{
   const {carsId} = req.params;
-  const bookNowdata = req.body;
+  const bookNowData = req.body;
 
   const car = await carsCollection.findOne({_id: new ObjectId(carsId)})
 
@@ -128,8 +126,12 @@ app.patch('/booknow/:carsId',verifyToken ,async(req, res) =>{
      },
   });
 
+  //  console.log(bookNowData);
+   
+
+
   const result = await bookNowCollection.insertOne({
-    ...bookNowdata,
+    ...bookNowData,
     bookNow: new Date()
   });
 
