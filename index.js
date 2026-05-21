@@ -73,27 +73,36 @@ async function run() {
     const carsCollection = db.collection('Cars')
     const bookNowCollection = db.collection('bookNow')
 
+    // search api
     app.get("/cars", async (req, res) => {
-      const { search } = req.query;
+      try {
+        const { search } = req.query;
+        let query = {}; 
 
-      // let cursor;
-      // if(search){
-      //   cursor = carsCollection.find({title: search});
+        
+        if (search) {
+          query = {
+            carModel: {
+              $regex: search,    
+              $options: 'i'      
+            }
+          };
+        }
+   
+        const result = await carsCollection.find(query).toArray();
 
-      // }
+        res.json(result);
 
-      // console.log(cars);
-      const result = await carsCollection.find().toArray()
-      res.json(result)
-
+      } catch (error) {
+        console.error("Search Error:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+      }
     });
 
     app.get("/featuredCar", async (req, res) => {
       const result = await carsCollection.find().limit(6).toArray()
       res.send(result)
     })
-
-
 
     app.get("/cars/:carsId", async (req, res) => {
       const { carsId } = req.params;
@@ -115,6 +124,14 @@ async function run() {
 
       res.send(result);
 
+    })
+
+    // delete api
+    app.delete("/bookNow/:carsId", async (req, res) => {
+      const { carsId } = req.params;
+      const result = await bookNowCollection.deleteOne({ _id: new ObjectId(carsId) });
+
+      res.json(result);
     })
 
 
@@ -147,9 +164,6 @@ async function run() {
       res.send(result);
 
     });
-
-
-
 
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
