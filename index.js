@@ -77,18 +77,17 @@ async function run() {
     app.get("/cars", async (req, res) => {
       try {
         const { search } = req.query;
-        let query = {}; 
+        let query = {};
 
-        
         if (search) {
           query = {
             carModel: {
-              $regex: search,    
-              $options: 'i'      
+              $regex: search,
+              $options: 'i'
             }
           };
         }
-   
+
         const result = await carsCollection.find(query).toArray();
 
         res.json(result);
@@ -133,6 +132,35 @@ async function run() {
 
       res.json(result);
     })
+
+    // add car api
+    app.post("/my-added-cars", async (req, res) => {
+      const newCar = req.body;
+      const result = await bookNowCollection.insertOne(newCar);
+      // console.log(result, 'result...');
+
+
+      res.json(result);
+    })
+
+    // my added cars api
+    app.get("/my-added-cars", async (req, res) => {
+     
+      const email = req.query.email;
+      
+      if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+      }
+      const query = { userEmail: email };
+
+      try {
+   
+        const result = await bookNowCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Something went wrong", error });
+      }
+    });
 
 
     app.patch('/bookNow/:carsId', verifyToken, async (req, res) => {
