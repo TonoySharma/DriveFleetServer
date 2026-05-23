@@ -163,7 +163,27 @@ async function run() {
         res.status(500).send({ message: "Something went wrong", error });
       }
     });
+    
+    // my added edite cars api
+    app.patch("/bookNow/:carsId", async (req, res) =>{
+      const { carsId } = req.params;
+      const updatedData = req.body
 
+      console.log(updatedData, 'updatedData');
+      
+
+      const result = await bookNowCollection.updateOne(
+        {
+          _id: new ObjectId(carsId)
+        },
+
+        {
+          $set: updatedData,
+        }
+      )
+
+      res.json(result)
+    })
 
     app.patch('/bookNow/:carsId', verifyToken, async (req, res) => {
       const { carsId } = req.params;
