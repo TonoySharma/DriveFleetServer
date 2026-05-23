@@ -147,10 +147,9 @@ async function run() {
     app.get("/my-added-cars", async (req, res) => {
      
       const email = req.query.email;
-      
-      if (!email) {
-        return res.status(400).send({ message: "Email is required" });
-      }
+
+      // console.log(email);
+
       const query = { userEmail: email };
 
       try {
@@ -158,6 +157,9 @@ async function run() {
         const result = await bookNowCollection.find(query).toArray();
         res.send(result);
       } catch (error) {
+
+        // console.log(result);
+
         res.status(500).send({ message: "Something went wrong", error });
       }
     });
