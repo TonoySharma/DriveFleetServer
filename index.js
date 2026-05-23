@@ -165,7 +165,7 @@ async function run() {
     });
     
     // my added edite cars api
-    app.patch("/bookNow/:carsId", async (req, res) =>{
+    app.put("/bookNow/:carsId", async (req, res) =>{
       const { carsId } = req.params;
       const updatedData = req.body
 
@@ -185,16 +185,21 @@ async function run() {
       res.json(result)
     })
 
-    app.patch('/bookNow/:carsId', verifyToken, async (req, res) => {
+
+    app.patch('/bookNow/:carsId', async (req, res) => {
       const { carsId } = req.params;
       const bookNowData = req.body;
 
       const car = await carsCollection.findOne({ _id: new ObjectId(carsId) })
-
+      // console.log(carsId);
+      
       if (!car) {
         res.status(404).json({ message: 'Car not found' });
       }
-
+      
+      // console.log(car);
+      // console.log("hello");
+      
       await carsCollection.updateOne({ _id: new ObjectId(carsId) }, {
         $inc: { bookNowCount: 1 },
         $set: {
@@ -210,7 +215,9 @@ async function run() {
         ...bookNowData,
         bookNow: new Date()
       });
-
+       
+      console.log(result);
+      
       res.send(result);
 
     });
