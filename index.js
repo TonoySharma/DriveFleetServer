@@ -46,9 +46,7 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    const JWKS = createRemoteJWKSet(
-      new URL('http://localhost:3000/api/auth/jwks')
-    )
+
     const { payload } = await jwtVerify(token, JWKS,)
     req.user = payload;
     // console.log(payload);
@@ -101,11 +99,11 @@ async function run() {
     app.get("/featuredCar", async (req, res) => {
       const result = await carsCollection.find().limit(6).toArray()
       res.send(result)
-    })
+    });
 
     app.get("/cars/:carsId", async (req, res) => {
       const { carsId } = req.params;
-      console.log(carsId);
+      // console.log(carsId);
       const query = { _id: new ObjectId(carsId) }
       const result = await carsCollection.findOne(query);
 
@@ -123,7 +121,7 @@ async function run() {
 
       res.send(result);
 
-    })
+    });
 
     // delete api
     app.delete("/bookNow/:carsId", async (req, res) => {
@@ -131,7 +129,7 @@ async function run() {
       const result = await bookNowCollection.deleteOne({ _id: new ObjectId(carsId) });
 
       res.json(result);
-    })
+    });
 
     // add car api
     app.post("/my-added-cars", async (req, res) => {
@@ -141,7 +139,7 @@ async function run() {
 
 
       res.json(result);
-    })
+    });
 
     // my added cars api
     app.get("/my-added-cars", async (req, res) => {
@@ -169,7 +167,7 @@ async function run() {
       const { carsId } = req.params;
       const updatedData = req.body
 
-      console.log(updatedData, 'updatedData');
+      // console.log(updatedData, 'updatedData');
       
 
       const result = await bookNowCollection.updateOne(
@@ -183,7 +181,7 @@ async function run() {
       )
 
       res.json(result)
-    })
+    });
 
 
     app.patch('/bookNow/:carsId', async (req, res) => {
@@ -216,7 +214,7 @@ async function run() {
         bookNow: new Date()
       });
        
-      console.log(result);
+      // console.log(result);
       
       res.send(result);
 
