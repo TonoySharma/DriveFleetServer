@@ -65,6 +65,10 @@ const verifyToken = async (req, res, next) => {
 
 async function run() {
   try {
+    // const JWKS = createRemoteJWKSet(
+    //   new URL('http://localhost:3000/api/auth/jwks')
+    // )
+
     // Connect the client to the server	(optional starting in v4.7)
 
     const db = client.db("DriveFleet")
@@ -143,7 +147,7 @@ async function run() {
 
     // my added cars api
     app.get("/my-added-cars", async (req, res) => {
-     
+
       const email = req.query.email;
 
       // console.log(email);
@@ -151,7 +155,7 @@ async function run() {
       const query = { userEmail: email };
 
       try {
-   
+
         const result = await bookNowCollection.find(query).toArray();
         res.send(result);
       } catch (error) {
@@ -161,14 +165,14 @@ async function run() {
         res.status(500).send({ message: "Something went wrong", error });
       }
     });
-    
+
     // my added edite cars api
-    app.put("/bookNow/:carsId", async (req, res) =>{
+    app.put("/bookNow/:carsId", async (req, res) => {
       const { carsId } = req.params;
       const updatedData = req.body
 
       // console.log(updatedData, 'updatedData');
-      
+
 
       const result = await bookNowCollection.updateOne(
         {
@@ -190,14 +194,14 @@ async function run() {
 
       const car = await carsCollection.findOne({ _id: new ObjectId(carsId) })
       // console.log(carsId);
-      
+
       if (!car) {
         res.status(404).json({ message: 'Car not found' });
       }
-      
+
       // console.log(car);
       // console.log("hello");
-      
+
       await carsCollection.updateOne({ _id: new ObjectId(carsId) }, {
         $inc: { bookNowCount: 1 },
         $set: {
@@ -213,9 +217,9 @@ async function run() {
         ...bookNowData,
         bookNow: new Date()
       });
-       
+
       // console.log(result);
-      
+
       res.send(result);
 
     });
